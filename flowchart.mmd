@@ -1,0 +1,58 @@
+flowchart TD
+    A["Start script"] --> B["Initialize colors and helper functions"]
+    B --> C["Define helpers"]
+
+    subgraph "Helper functions"
+        C1["check_status(status, phase)"]
+        C2{"status != 0 ?"}
+        C3["log_err: phase failed"]
+        C4["log_info: phase completed"]
+        C1 --> C2
+        C2 -->|"Yes"| C3
+        C2 -->|"No"| C4
+    end
+
+    C --> D{"BUILD_DIR exists?"}
+    D -->|"No"| E["mkdir -p ~/kernel-build"]
+    D -->|"Yes"| F["Reuse existing directory"]
+    E --> G["check_status: create directory"]
+    F --> G
+
+    G --> H{"BUILD_DIR is already a tmpfs mount?"}
+    H -->|"Yes"| I["sudo mount -o remount,size=35G tmpfs $BUILD_DIR"]
+    H -->|"No"| J["sudo mount -t tmpfs -o size=35G tmpfs $BUILD_DIR"]
+    I --> K["check_status: remount tmpfs"]
+    J --> K
+
+    K --> L["cd $BUILD_DIR"]
+    L --> M{"linux-tkg present?"}
+    M -->|"Yes"| N["git fetch and reset linux-tkg"]
+    M -->|"No"| O["git clone linux-tkg"]
+    N --> P["check_status: update linux-tkg"]
+    O --> Q["cd linux-tkg"]
+    Q --> P
+
+    P --> R["makepkg -s with MAKEFLAGS=-j24"]
+    R --> S{"makepkg succeeded?"}
+    S -->|"Yes"| T["List built packages"]
+    S -->|"No"| U["check_status: kernel compilation"]
+    T --> V{"pkg.tar.zst package found?"}
+    V -->|"No"| W["log_err: no package found"]
+    V -->|"Yes"| X["sudo pacman -U $PKGS"]
+    X --> Y["check_status: install packages"]
+
+    Y --> Z["sudo dkms status"]
+    Z --> AA["uname -r"]
+    AA --> AB["Display success banner and reboot guidance"]
+    U --> AB
+    W --> AB
+
+    classDef success fill:#d9f2d9,stroke:#2e7d32,stroke-width:1px;
+    classDef warning fill:#fff4cc,stroke:#d4a017,stroke-width:1px;
+    classDef error fill:#f8d7da,stroke:#b02a37,stroke-width:1px;
+    classDef process fill:#e8f0fe,stroke:#3367d6,stroke-width:1px;
+
+    class B,C,E,F,G,I,J,K,L,N,O,Q,R,T,X,Y,Z,AA,AB process;
+    class C2,C4 success;
+    class C3,W,U error;
+    class D,H,M,S,V warning;
