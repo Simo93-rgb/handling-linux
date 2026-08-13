@@ -9,15 +9,10 @@ Questo repository raccoglie script, note e riferimenti utili per la gestione del
 handling-linux/
 ├── README.md
 ├── docs/
-│   ├── kernel-build.md
-│   └── grub-config.md
 ├── scripts/
 │   └── system/
-│       └── update_kernel.sh
 ├── diagrams/
-│   └── flowchart.mmd
-└── .vscode/
-    └── settings.json
+└── config/
 ```
 
 ## 🧭 Come usare la repo
@@ -26,6 +21,7 @@ handling-linux/
 - La directory [docs/](docs/) contiene i documenti dettagliati dedicati alle procedure e alle configurazioni.
 - La directory [scripts/system/](scripts/system/) contiene gli script di automazione e gestione del sistema.
 - La directory [diagrams/](diagrams/) raccoglie i diagrammi e le mappe di flusso.
+- La directory [configs/](configs/) contiene file di configurazione.
 
 ## 📚 Documentazione disponibile
 
