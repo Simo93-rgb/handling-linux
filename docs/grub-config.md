@@ -33,4 +33,4 @@ Questa impostazione garantisce che:
 
 ## 4. Quando usarla
 
-Questo setup è utile soprattutto dopo la compilazione di un nuovo kernel personalizzato, quando si vuole evitare il passaggio manuale attraverso il menu avanzato e migliorare la fluidità del workflow di boot.
+Questo setup è utile soprattutto dopo la [compilazione di un nuovo kernel personalizzato](kernel-build.md), quando si vuole evitare il passaggio manuale attraverso il menu avanzato e migliorare la fluidità del workflow di boot.

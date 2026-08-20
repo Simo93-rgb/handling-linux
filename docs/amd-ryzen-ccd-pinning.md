@@ -1,4 +1,4 @@
-# AMD Ryzen Multi-CCD Optimization & Dynamic Pinning Guide
+# AMD Ryzen CCD Mapping & GameMode Pinning Guide
 
 Manuale tecnico per la mitigazione della latenza inter-CCD e l'eliminazione del frametime jitter nei carichi gaming su Linux/Proton tramite Feral GameMode e ACPI CPPC Core Mapping.
 
@@ -86,6 +86,8 @@ Soluzione: delegare il pinning a Feral GameMode (gamemoded), che opera come demo
 ---
 
 ## 4. Installazione e Configurazione di GameMode
+
+Per la segregazione complementare di KWin, PipeWire, servizi di sistema e applicazioni desktop tramite systemd/cgroups v2, consulta la [guida alla segregazione dei carichi sui CCD](amd-ryzen-systemd-ccd-segregation.md).
 
 ### Step 1: installazione pacchetti
 

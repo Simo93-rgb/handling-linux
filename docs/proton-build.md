@@ -36,7 +36,8 @@ cd wine-tkg-git/proton-tkg
 2. Personalizzare il file `proton-tkg.cfg` come da [esempio](../config/proton-tkg.cfg).
 3. Lanciare la compilazione con l'installer `./proton-tkg.sh`
 4. Controllare che sia stata genarata la versione di proton al percorso `~/.steam/root/compatibilitytools.d/proton_tkg_<versione>`
-5. Si consiglia di pulire la cache di Steam 
+5. Per usare il runtime appena compilato insieme al pinning del gioco sul CCD selezionato, consulta la [guida alla mappatura CCD e al pinning con GameMode](amd-ryzen-ccd-pinning.md).
+6. Si consiglia di pulire la cache di Steam
 ```bash
 # Reset completo shader e prefix per uno specifico AppID
 rm -rf ~/.steam/root/steamapps/shadercache/<APP_ID>
