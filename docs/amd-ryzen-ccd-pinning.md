@@ -87,7 +87,7 @@ Soluzione: delegare il pinning a Feral GameMode (gamemoded), che opera come demo
 
 ## 4. Installazione e Configurazione di GameMode
 
-Per la segregazione complementare di KWin, PipeWire, servizi di sistema e applicazioni desktop tramite systemd/cgroups v2, consulta la [guida alla segregazione dei carichi sui CCD](amd-ryzen-systemd-ccd-segregation.md).
+Il sistema resta libero di usare tutti i 24 thread fuori dal gioco. Durante una sessione avviata con `gamemoderun`, gli hook custom di GameMode spostano KWin, PipeWire, WirePlumber e il gioco sul Golden CCD 0; alla chiusura, l'hook finale restituisce KWin e lo stack audio all'intero pool `0-23`. Per la procedura completa consulta la [guida alla segregazione dinamica dei carichi sui CCD](amd-ryzen-systemd-ccd-segregation.md).
 
 ### Step 1: installazione pacchetti
 
@@ -137,9 +137,13 @@ desiredgov=performance
 igpu_power_threshold=-1
 
 [cpu]
-# Confinamento esclusivo sul Golden CCD0 (12 thread logici)
+# Pinning del gioco sul Golden CCD0 (12 thread logici)
 pin_cores=0-5,12-17
 park_cores=no
+
+[custom]
+start=/home/simone/.local/bin/game-start.fish
+end=/home/simone/.local/bin/game-end.fish
 ```
 
 Nota: omettere o non configurare la sezione [gpu] se si utilizzano driver proprietari moderni Nvidia/Wayland su serie RTX 40xx per evitare errori di compatibilita NVML con gpuclockctl.
@@ -162,6 +166,20 @@ gamemoded -t
 ```
 
 Tutti i check critici (Basic client, Dual client, Reaper thread, CPU governor, Supervisor) devono restituire Passed.
+
+### Step 6: installazione degli hook dinamici
+
+Copia gli script versionati nella directory degli script utente e rendili eseguibili:
+
+```fish
+mkdir -p ~/.local/bin
+cp scripts/system/game-start.fish scripts/system/game-end.fish ~/.local/bin/
+chmod +x ~/.local/bin/game-start.fish ~/.local/bin/game-end.fish
+sudo cp config/gamemode.ini /etc/gamemode.ini
+systemctl --user restart gamemoded
+```
+
+Gli hook vengono eseguiti solo per i giochi lanciati con `gamemoderun`. In uso normale, compilazioni, shader e processi Python conservano l'accesso a tutti i thread.
 
 ---
 
