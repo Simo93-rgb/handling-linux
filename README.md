@@ -27,7 +27,8 @@ handling-linux/
 
 - [Compilazione kernel Linux-TKG](docs/kernel-build.md)
 - [Configurazione GRUB](docs/grub-config.md)
-- [Script di aggiornamento kernel](scripts/system/update_kernel.sh)
+- [Script di compilazione kernel](scripts/system/compile-kernel.fish)
+- [Selezione kernel predefinito in GRUB](scripts/system/select-default-kernel.fish)
 - [Flowchart del processo](diagrams/flowchart.mmd)
 
 ## 🎯 Obiettivo

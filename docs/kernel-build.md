@@ -28,7 +28,7 @@ Procedura per la compilazione locale e personalizzata del kernel Linux-TKG ottim
 
 Lo script automazione associato alla procedura è disponibile in:
 
-- [scripts/system/update_kernel.sh](../scripts/system/update_kernel.sh)
+- [scripts/system/compile-kernel.fish](../scripts/system/compile-kernel.fish)
 
 Dopo l'installazione di un nuovo kernel, puoi configurare GRUB per selezionarlo automaticamente con la [guida alla configurazione di GRUB](grub-config.md).
 

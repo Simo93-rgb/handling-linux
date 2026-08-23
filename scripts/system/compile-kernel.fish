@@ -1,22 +1,20 @@
 #!/usr/bin/env fish
 
-# Colori per l'output nel terminale
-set -l GREEN (set_color green)
-set -l RED (set_color red)
-set -l YELLOW (set_color yellow)
-set -l BOLD (set_color --bold)
-set -l RESET (set_color normal)
-
+# Colori per l'output nel terminale (gestiti nativamente da Fish)
 function log_info
-    echo -e "{$GREEN}[INFO]{$RESET} $argv"
+    echo (set_color green)"[INFO] "(set_color normal)"$argv"
 end
 
 function log_warn
-    echo -e "{$YELLOW}[WARN]{$RESET} $argv"
+    echo (set_color yellow)"[WARN] "(set_color normal)"$argv"
 end
 
 function log_err
-    echo -e "{$RED}[ERROR]{$RESET} $argv"
+    echo (set_color red)"[ERROR] "(set_color normal)"$argv"
+end
+
+function log_bold
+    echo (set_color --bold)"$argv"(set_color normal)
 end
 
 function check_status
@@ -28,7 +26,8 @@ function check_status
     end
 end
 
-echo -e "{$BOLD}=== Avvio Script di Compilazione e Installazione Linux-TKG ==={$RESET}\n"
+log_bold "=== Avvio Script di Compilazione e Installazione Linux-TKG ==="
+echo ""
 
 # -----------------------------------------------------------------------------
 # FASE 1: Preparazione RAM (tmpfs)
@@ -86,9 +85,10 @@ check_status "Compilazione del kernel (makepkg)"
 # -----------------------------------------------------------------------------
 log_info "Fase 4: Ricerca ed installazione dei pacchetti .pkg.tar.zst generati..."
 
-set -l PKGS (ls *.pkg.tar.zst 2>/dev/null)
+# Globbing nativo sicuro: non subisce alias/formattazioni esterne
+set -l PKGS *.pkg.tar.zst
 
-if test (count $PKGS) -eq 0
+if test (count $PKGS) -eq 0 -o ! -e "$PKGS[1]"
     log_err "Nessun pacchetto .pkg.tar.zst trovato nella directory corrente!"
     exit 1
 end
@@ -106,11 +106,14 @@ check_status "Installazione pacchetti tramite pacman"
 # -----------------------------------------------------------------------------
 log_info "Fase 5: Verifica dello stato dei moduli DKMS per Nvidia..."
 
-echo -e "\n{$BOLD}--- Output di 'sudo dkms status' ---{$RESET}"
+echo ""
+log_bold "--- Output di 'sudo dkms status' ---"
 sudo dkms status
 
-echo -e "\n{$BOLD}--- Versione Kernel Attualmente in uso ---{$RESET}"
+echo ""
+log_bold "--- Versione Kernel Attualmente in uso ---"
 uname -r
 
-echo -e "\n{$GREEN}{$BOLD}=== Procedura completata con successo! ==={$RESET}"
+echo ""
+echo (set_color green --bold)"=== Procedura completata con successo! ==="(set_color normal)
 log_info "Puoi riavviare il sistema per attivare il nuovo kernel BORE."
