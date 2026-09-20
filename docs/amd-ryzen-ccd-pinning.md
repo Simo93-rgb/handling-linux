@@ -87,7 +87,8 @@ Soluzione: delegare il pinning a Feral GameMode (gamemoded), che opera come demo
 
 ## 4. Installazione e Configurazione di GameMode
 
-Il sistema resta libero di usare tutti i 24 thread fuori dal gioco. Durante una sessione avviata con `gamemoderun`, gli hook custom di GameMode spostano KWin, PipeWire, WirePlumber e il gioco sul Golden CCD 0; alla chiusura, l'hook finale restituisce KWin e lo stack audio all'intero pool `0-23`. Per la procedura completa consulta la [guida alla segregazione dinamica dei carichi sui CCD](amd-ryzen-systemd-ccd-segregation.md).
+Il sistema resta libero di usare tutti i 24 thread fuori dal gioco. Durante una sessione avviata con `gamemoderun`, gli hook custom di GameMode spostano KWin, PipeWire, WirePlumber, EasyEffects e il gioco sul Golden CCD 0 (`0-5,12-17`), mentre tutti gli altri processi utente vengono segregati dinamicamente sul CCD 1 (`6-11,18-23`). Alla chiusura del gioco, l'hook finale restituisce l'intero user-space al pool globale `0-23`. Per la procedura completa consulta la [guida alla segregazione dinamica dei carichi sui CCD](amd-ryzen-systemd-ccd-segregation.md).
+
 
 ### Step 1: installazione pacchetti
 
@@ -174,10 +175,12 @@ Copia gli script versionati nella directory degli script utente e rendili esegui
 ```fish
 mkdir -p ~/.local/bin
 cp scripts/system/game-start.fish scripts/system/game-end.fish ~/.local/bin/
-chmod +x ~/.local/bin/game-start.fish ~/.local/bin/game-end.fish
+cp scripts/tests/check_ccd_topology.fish ~/.local/bin/check-topology.fish
+chmod +x ~/.local/bin/game-start.fish ~/.local/bin/game-end.fish ~/.local/bin/check-topology.fish
 sudo cp config/gamemode.ini /etc/gamemode.ini
 systemctl --user restart gamemoded
 ```
+
 
 Gli hook vengono eseguiti solo per i giochi lanciati con `gamemoderun`. In uso normale, compilazioni, shader e processi Python conservano l'accesso a tutti i thread.
 
