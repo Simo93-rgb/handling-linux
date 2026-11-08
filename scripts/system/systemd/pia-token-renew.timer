@@ -1,0 +1,13 @@
+[Unit]
+Description=PIA Token Renewal Timer
+
+[Timer]
+# Primo rinnovo 5 minuti dopo l'avvio del sistema
+OnBootSec=5min
+# Rinnovo automatico ogni 12 ore dall'ultima esecuzione
+OnUnitActiveSec=12h
+# Margine di precisione del timer per ottimizzare i wakeup della CPU
+AccuracySec=5min
+
+[Install]
+WantedBy=timers.target

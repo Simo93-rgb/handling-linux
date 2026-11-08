@@ -13,6 +13,7 @@ handling-linux/
 │   ├── environment.d/
 │   │   └── 10-huggingface.conf
 │   ├── gamemode.ini
+│   ├── pia-vpn.desktop
 │   └── proton-tkg.cfg
 ├── diagrams/
 │   └── flowchart.mmd
@@ -23,6 +24,7 @@ handling-linux/
 │   ├── huggingface-cache-storage.md
 │   ├── kernel-build.md
 │   ├── openrgb.md
+│   ├── pia-wireguard-vpn.md
 │   └── proton-build.md
 └── scripts/
     ├── config/
@@ -31,10 +33,18 @@ handling-linux/
     │   ├── compile-kernel.fish
     │   ├── game-end.fish
     │   ├── game-start.fish
+    │   ├── pia/
+    │   │   ├── pia-ctl
+    │   │   ├── pia-vpn.sh
+    │   │   └── renew-token.sh
     │   ├── restore-standard-topology.fish
     │   ├── select-default-kernel.fish
     │   ├── setup-huggingface-cache.fish
-    │   └── sync-topology-scripts.fish
+    │   ├── sync-topology-scripts.fish
+    │   └── systemd/
+    │       ├── pia-token-renew.service
+    │       ├── pia-token-renew.timer
+    │       └── pia-vpn.service
     └── tests/
         ├── check_ccd_topology.fish
         └── check_huggingface_cache.fish
@@ -77,6 +87,13 @@ handling-linux/
 - [Configurazione ambiente sessione](config/environment.d/10-huggingface.conf): Template dichiarativo per `~/.config/environment.d/10-huggingface.conf`.
 - [Script di rilocazione cache](scripts/system/setup-huggingface-cache.fish): Tool per configurare la directory di destinazione e registrare le variabili in systemd e Fish.
 - [Diagnostica configurazione cache](scripts/tests/check_huggingface_cache.fish): Test di verifica filesystem, variabili d'ambiente e runtime Python/uv.
+
+### 🔒 Rete, Privacy & VPN (Private Internet Access)
+- [Guida integrazione PIA WireGuard e Port Forwarding](docs/pia-wireguard-vpn.md): Architettura, rinnovo token automatico (timer 12h), selezione server IT Milano / lowest-ping, persistenza firma Port Forwarding (stessa porta 60gg) e watchdog.
+- [Demone WireGuard e Watchdog](scripts/system/pia/pia-vpn.sh): Script di connessione automatica, configurazione interfaccia `pia` e keepalive bindPort.
+- [CLI di controllo e helper desktop](scripts/system/pia/pia-ctl): Utility `pia-ctl` per connessione, disconnessione, toggle rapido e verifica porta attiva.
+- [Timer e servizi systemd](scripts/system/systemd/): Unità per il rinnovo credenziali (`pia-token-renew.{service,timer}`) e demone VPN (`pia-vpn.service`).
+- [Desktop entry per KDE Plasma](config/pia-vpn.desktop): Scorciatoia con supporto toggle e menu azioni contestuali.
 
 ## 🎯 Obiettivo
 
