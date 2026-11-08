@@ -1,0 +1,27 @@
+[Unit]
+Description=Private Internet Access WireGuard VPN with Port Forwarding
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+EnvironmentFile=/etc/pia/credentials
+
+# Esecuzione da percorso di sistema persistente
+ExecStart=/usr/bin/bash /usr/local/libexec/handling-linux/pia-vpn.sh
+
+# Riavvio automatico se il watchdog interno rileva interruzione di linea
+Restart=on-failure
+RestartSec=5s
+
+# Hardening e isolamento
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+
+# Percorsi abilitati in scrittura per stato token, config WireGuard e porta runtime
+ReadWritePaths=/opt/piavpn-manual /var/opt/piavpn-manual /etc/wireguard /run
+
+[Install]
+WantedBy=multi-user.target

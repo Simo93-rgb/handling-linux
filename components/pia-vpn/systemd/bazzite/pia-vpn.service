@@ -1,0 +1,19 @@
+[Unit]
+Description=Private Internet Access WireGuard VPN (Bazzite)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+EnvironmentFile=/etc/pia/credentials
+ExecStart=/usr/local/libexec/handling-linux/pia-vpn.sh
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/pia-handling /etc/wireguard /run
+
+[Install]
+WantedBy=multi-user.target

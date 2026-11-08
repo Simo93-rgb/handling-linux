@@ -1,0 +1,21 @@
+name: Repository checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  structure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Fish
+        run: sudo apt-get update && sudo apt-get install --yes fish
+
+      - name: Validate repository
+        run: bash scripts/checks/check_repository.sh

@@ -1,0 +1,38 @@
+flowchart TD
+    Root["handling-linux"]
+    Components["components"]
+    Checks["scripts/checks"]
+    Diagrams["diagrams"]
+    Root --> Components
+    Root --> Checks
+    Root --> Diagrams
+
+    Cpu["cpu-gaming"]
+    Kernel["kernel"]
+    Proton["proton"]
+    Storage["storage"]
+    OpenRGB["openrgb"]
+    Pia["pia-vpn"]
+    Audio["audio"]
+    Platforms["platforms"]
+    Components --> Cpu
+    Components --> Kernel
+    Components --> Proton
+    Components --> Storage
+    Components --> OpenRGB
+    Components --> Pia
+    Components --> Audio
+    Components --> Platforms
+
+    Docs["docs"]
+    Config["config"]
+    Scripts["scripts"]
+    Tests["tests"]
+    Cpu --> Docs
+    Cpu --> Config
+    Cpu --> Scripts
+    Cpu --> Tests
+    Scripts --> CachyOS["cachyos"]
+    Scripts --> Bazzite["bazzite"]
+    Platforms --> CachyProfile["cachyos.md"]
+    Platforms --> BazziteProfile["bazzite.md"]

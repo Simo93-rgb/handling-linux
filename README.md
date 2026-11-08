@@ -1,105 +1,66 @@
 # handling-linux
-Mantenimento e configurazioni personalizzate per la distribuzione Linux in uso (CachyOS).
 
-Questo repository raccoglie script, note e riferimenti utili per la gestione del sistema operativo. È pensato per crescere nel tempo, mantenendo separata la presentazione generale della repo dalla documentazione tecnica specifica.
+Configurazioni, automazioni e guide per una workstation Linux CachyOS/Arch o
+Bazzite/Fedora Atomic.
 
-## 📁 Struttura della repository
+## Navigazione rapida
+
+La repository è organizzata per **componente**, non per tipo di file. Per ogni
+funzione si entra in una sola directory e da lì si trovano guida, configurazioni,
+script, test e differenze tra piattaforme.
+
+| Componente | Contenuto | Ingresso |
+| --- | --- | --- |
+| CPU e gaming | CCD, GameMode, hook e diagnostica | [components/cpu-gaming/](components/cpu-gaming/) |
+| Audio | Profili EasyEffects | [components/audio/](components/audio/) |
+| Kernel | Linux-TKG, GRUB e build | [components/kernel/](components/kernel/) |
+| Proton | Proton-TKG e configurazione | [components/proton/](components/proton/) |
+| Storage | Cache Hugging Face e environment.d | [components/storage/](components/storage/) |
+| OpenRGB | Flatpak, udev e i2c-dev | [components/openrgb/](components/openrgb/) |
+| PIA VPN | WireGuard, port forwarding e systemd | [components/pia-vpn/](components/pia-vpn/) |
+
+Ogni componente contiene un proprio `README.md` con prerequisiti, installazione
+e percorsi degli artefatti. Per capire la struttura complessiva consulta
+[il diagramma della repository](diagrams/repository-structure.mmd).
+
+## Piattaforme
+
+- [Profilo CachyOS/Arch](components/platforms/cachyos.md): Fish e tool Arch.
+- [Profilo Bazzite/Fedora Atomic](components/platforms/bazzite.md): Bash,
+  Flatpak, Toolbox/Distrobox e integrazioni host minime.
+
+Le varianti sono esplicite: non eseguire uno script di una piattaforma
+all'interno dell'altra senza leggere il README del componente.
+
+## Struttura
 
 ```text
-handling-linux/
-├── README.md
-├── config/
-│   ├── EasyEffects/
-│   ├── environment.d/
-│   │   └── 10-huggingface.conf
-│   ├── gamemode.ini
-│   ├── pia-vpn.desktop
-│   └── proton-tkg.cfg
-├── diagrams/
-│   └── flowchart.mmd
-├── docs/
-│   ├── amd-ryzen-ccd-pinning.md
-│   ├── amd-ryzen-systemd-ccd-segregation.md
-│   ├── grub-config.md
-│   ├── huggingface-cache-storage.md
-│   ├── kernel-build.md
-│   ├── openrgb.md
-│   ├── pia-wireguard-vpn.md
-│   └── proton-build.md
-└── scripts/
-    ├── config/
-    │   └── openrgb_setup.sh
-    ├── system/
-    │   ├── compile-kernel.fish
-    │   ├── game-end.fish
-    │   ├── game-start.fish
-    │   ├── pia/
-    │   │   ├── pia-ctl
-    │   │   ├── pia-vpn.sh
-    │   │   └── renew-token.sh
-    │   ├── restore-standard-topology.fish
-    │   ├── select-default-kernel.fish
-    │   ├── setup-huggingface-cache.fish
-    │   ├── sync-topology-scripts.fish
-    │   └── systemd/
-    │       ├── pia-token-renew.service
-    │       ├── pia-token-renew.timer
-    │       └── pia-vpn.service
-    └── tests/
-        ├── check_ccd_topology.fish
-        └── check_huggingface_cache.fish
+components/
+├── audio/
+├── cpu-gaming/
+├── kernel/
+├── openrgb/
+├── pia-vpn/
+├── proton/
+├── storage/
+└── platforms/          Profili CachyOS e Bazzite
+diagrams/               Diagrammi trasversali
+scripts/checks/         Controlli globali della repository
+.github/                Workflow e istruzioni di collaborazione
 ```
 
-## 🧭 Come usare la repo
+## Verifica
 
-- Il file [README.md](README.md) è la presentazione iniziale della repository e il punto di ingresso principale.
-- La directory [docs/](docs/) contiene i documenti dettagliati dedicati alle procedure e alle configurazioni.
-- La directory [scripts/system/](scripts/system/) contiene gli script di automazione e gestione del sistema.
-- La directory [scripts/tests/](scripts/tests/) contiene gli script di test e diagnostica (topologia CCD, cache Hugging Face, verifica stato).
-- La directory [scripts/config/](scripts/config/) contiene script di configurazione hardware/periferiche.
-- La directory [config/](config/) contiene file di configurazione per demoni, emulatori e sessione utente (GameMode, EasyEffects, Proton-TKG, environment.d).
-- La directory [diagrams/](diagrams/) raccoglie i diagrammi e le mappe di flusso.
+```bash
+bash scripts/checks/check_repository.sh
+```
 
-## 📚 Documentazione e Script disponibili
+Il controllo verifica albero, link locali e sintassi Bash/Fish. I test dentro i
+componenti sono invece diagnostiche specifiche e vanno eseguiti solo nel
+contesto descritto dal rispettivo README.
 
-### ⚙️ Gestione CPU e Topologia Dual-CCD (AMD Ryzen 9 5900X)
-- [Segregazione dinamica Dual-CCD](docs/amd-ryzen-systemd-ccd-segregation.md): Architettura, hook GameMode e isolamento L3.
-- [Guida al Pinning CCD con GameMode](docs/amd-ryzen-ccd-pinning.md): CPPC mapping, configurazione `/etc/gamemode.ini` e lancio Steam.
-- [Sincronizzazione script di sistema](scripts/system/sync-topology-scripts.fish): Tool per sincronizzare i file della repo con `~/.local/bin/` e `/etc/`.
-- [Test e diagnostica topologia CCD](scripts/tests/check_ccd_topology.fish): Script di verifica dello stato idle / gaming con controllo disallineamento integrato.
-- [Hook avvio gioco (CCD0 + CCD1)](scripts/system/game-start.fish) e [Hook fine gioco (reset 0-23)](scripts/system/game-end.fish).
-- [Ripristino standard topologia](scripts/system/restore-standard-topology.fish): Pulizia override statici e reset RT.
+## Collaborazione
 
-### 🐧 Kernel e Bootloader
-- [Compilazione kernel Linux-TKG](docs/kernel-build.md)
-- [Configurazione GRUB](docs/grub-config.md)
-- [Script di compilazione kernel](scripts/system/compile-kernel.fish)
-- [Selezione kernel predefinito in GRUB](scripts/system/select-default-kernel.fish)
-- [Flowchart del processo di build](diagrams/flowchart.mmd)
-
-### 🎮 Gaming e Periferiche
-- [Guida alla compilazione di Proton-TKG](docs/proton-build.md)
-- [Configurazione OpenRGB](docs/openrgb.md) e [Script di setup OpenRGB](scripts/config/openrgb_setup.sh)
-- [Profili DSP EasyEffects](config/EasyEffects/)
-
-### 📦 Storage, Cache e Machine Learning
-- [Rilocazione Cache Hugging Face](docs/huggingface-cache-storage.md): Architettura CAS, isolamento storage SATA/NVMe secondario, systemd `environment.d` e variabili universali Fish.
-- [Configurazione ambiente sessione](config/environment.d/10-huggingface.conf): Template dichiarativo per `~/.config/environment.d/10-huggingface.conf`.
-- [Script di rilocazione cache](scripts/system/setup-huggingface-cache.fish): Tool per configurare la directory di destinazione e registrare le variabili in systemd e Fish.
-- [Diagnostica configurazione cache](scripts/tests/check_huggingface_cache.fish): Test di verifica filesystem, variabili d'ambiente e runtime Python/uv.
-
-### 🔒 Rete, Privacy & VPN (Private Internet Access)
-- [Guida integrazione PIA WireGuard e Port Forwarding](docs/pia-wireguard-vpn.md): Architettura, rinnovo token automatico (timer 12h), selezione server IT Milano / lowest-ping, persistenza firma Port Forwarding (stessa porta 60gg) e watchdog.
-- [Demone WireGuard e Watchdog](scripts/system/pia/pia-vpn.sh): Script di connessione automatica, configurazione interfaccia `pia` e keepalive bindPort.
-- [CLI di controllo e helper desktop](scripts/system/pia/pia-ctl): Utility `pia-ctl` per connessione, disconnessione, toggle rapido e verifica porta attiva.
-- [Timer e servizi systemd](scripts/system/systemd/): Unità per il rinnovo credenziali (`pia-token-renew.{service,timer}`) e demone VPN (`pia-vpn.service`).
-- [Desktop entry per KDE Plasma](config/pia-vpn.desktop): Scorciatoia con supporto toggle e menu azioni contestuali.
-
-## 🎯 Obiettivo
-
-Mantenere una repository ordinata, leggibile e facilmente scalabile, con una chiara separazione tra:
-
-- presentazione generale
-- documentazione tecnica
-- script operativi
-- diagrammi e riferimento visivo
+Consulta [CONTRIBUTING.md](CONTRIBUTING.md) prima di
+aggiungere o spostare un artefatto. La repository non ha ancora una licenza
+esplicita.

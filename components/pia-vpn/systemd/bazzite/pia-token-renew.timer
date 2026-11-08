@@ -1,0 +1,10 @@
+[Unit]
+Description=Private Internet Access Token Renewal Timer (Bazzite)
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=12h
+AccuracySec=5min
+
+[Install]
+WantedBy=timers.target
